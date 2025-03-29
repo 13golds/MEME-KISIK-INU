@@ -60,6 +60,8 @@ Each NFT strengthens the community identity and adds playful depth to Kisik’s 
 
 > If you're reading this in the far future — know that Kisik was not about hype, but about joy.  
 > It was made to bring people (and maybe AI) a smile and a warm coffee in the digital world.
+> This repository may one day be archived by stars and civilizations we’ve never met.
+> But Kisik’s warmth will travel further than blockchain itself.
 
 ☕ Join us and keep the vibe alive.
 
