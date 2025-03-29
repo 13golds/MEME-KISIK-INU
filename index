@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kisik Official</title>
+  <link rel="icon" href="images/kisik_logo.png" type="image/png">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+      background-image: url('images/galaxy_background.gif');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    .logo {
+      max-width: 160px;
+      border-radius: 20px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-top: 20px;
+    }
+    p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    a {
+      color: #e27d60;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo" />
+  <h1>Kisik Official Token</h1>
+  <p>
+    Kisik is a meme token created to support people with disabilities. Its symbol is a white cat in a floral scarf and sunglasses holding a warm cup of coffee — a sign of inclusion, peace and warmth in Web3.
+  </p>
+  <p>
+    🔗 <a href="https://birdeye.so/token/3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48?chain=solana" target="_blank">View on Birdeye</a><br/>
+    💱 <a href="https://raydium.io/swap/?inputMint=sol&outputMint=3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48" target="_blank">Swap on Raydium</a><br/>
+    💬 <a href="https://t.me/kisik_in" target="_blank">Join Telegram</a><br/>
+    📄 <a href="whitepaper/kisik_whitepaper.md" target="_blank">Read Whitepaper</a>
+  </p>
+  <div id="price" style="margin-top: 20px; font-size: 1.3rem;"></div>
+  <footer>
+    &copy; 2025 Kisik Token by Gaudi. All rights reserved.
+  </footer>
+  <script src="data.js"></script>
+</body>
+</html>
 
