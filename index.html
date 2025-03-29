@@ -124,7 +124,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateY(100px) translateX(calc(-30px + 60px * random()));
+    transform: translateY(100px) translateX(var(--offset-x));
     opacity: 0;
   }
 }
@@ -213,10 +213,13 @@
         const star = document.createElement('div');
         star.className = 'star';
         const rect = img.getBoundingClientRect();
-        star.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 30) + 'px';
+        const offsetX = (Math.random() - 0.5) * 60;
+        star.style.setProperty('--offset-x', offsetX + 'px');
+        star.style.left = (rect.left + rect.width / 2 + offsetX) + 'px';
         star.style.top = (rect.top + rect.height / 2 + window.scrollY) + 'px';
         document.body.appendChild(star);
         setTimeout(() => star.remove(), 2400);
+      }
       }
     });
   });
