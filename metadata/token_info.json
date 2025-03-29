@@ -1,5 +1,5 @@
 {
-  "name": "Kisik Official",
+  "name": "Kisik",
   "symbol": "KISIK",
   "mint": "3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48",
   "decimals": 6,
@@ -11,7 +11,11 @@
   "creation_date": "March 26, 2025",
   "creator": "Gaudi",
   "website": "https://13golds.github.io/MEME-KISIK-INU/",
-  "image": "images/kisik_logo.png",
-  "description": "Kisik is a meme token created to support people with disabilities. Its symbol is a white cat wearing sunglasses and a floral scarf, holding a cup of coffee — an invitation to warmth, acceptance, and inclusion."
+  "image": "https://raw.githubusercontent.com/13golds/MEME-KISIK-INU/main/images/image.png",
+  "telegram": "https://t.me/kisik_in",
+  "github": "https://github.com/13golds/MEME-KISIK-INU",
+  "birdeye": "https://birdeye.so/token/3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48?chain=solana",
+  "raydium": "https://raydium.io/swap/?inputMint=sol&outputMint=3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48",
+  "description": "Kisik is a meme token built for joy and identity in Web3. Its symbol is a white cat in sunglasses and a floral scarf offering peace, coffee, and curiosity to the world."
 }
 
