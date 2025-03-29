@@ -14,7 +14,7 @@
 
 ## ✨ What is Kisik?
 
-Kisik is a meme token with charm and curiosity. It was born as a playful digital cat who invites you for coffee ☕ — and maybe some fun along the journey to early discovery.
+Kisik is a meme token with charm and curiosity, designed to spark joy and foster creativity in the Web3 space. Beyond its playful image, Kisik serves as a cultural symbol and utility token for engaging with community-driven NFT experiences and future integrations like token-based Telegram notifications. It was born as a playful digital cat who invites you for coffee ☕ — and maybe some fun along the journey to early discovery.
 
 Holding Kisik means being part of a light-hearted but ambitious community that embraces creativity, fun, and long-term digital legacy.
 
@@ -62,5 +62,6 @@ Each NFT strengthens the community identity and adds playful depth to Kisik’s 
 > It was made to bring people (and maybe AI) a smile and a warm coffee in the digital world.
 
 ☕ Join us and keep the vibe alive.
+
 
 
