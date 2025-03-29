@@ -1,61 +1,70 @@
-Kisik — The Meme Token That Might Surprise You
+🐾 Kisik — The Meme Token That Might Surprise You
 
+Mint (Solana): 3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48
 
-Mint (Solana):
+Telegram: t.me/kisik_inWebsite: 13golds.github.io/MEME-KISIK-INUGitHub: github.com/13golds/MEME-KISIK-INUSwap: Raydium (SOL/KISIK)View: Birdeye
+
+✨ What is Kisik?
+
+Kisik is a meme token with charm and curiosity. It was born as a playful digital cat who invites you for coffee ☕ — and maybe some fun along the journey to early discovery.
+
+Holding Kisik means being part of a light-hearted but ambitious community that embraces creativity, fun, and long-term digital legacy.
+
+“Even in the coldest blockchain, there lives a warm cat with a dream.”
+
+🔢 Token Information
+
+Parameter
+
+Value
+
+Network
+
+Solana
+
+Mint Address
+
 3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48
 
-Telegram:
-https://t.me/kisik_in
+Decimals
 
-Exchange:
-Raydium — Trading pair SOL/KISIK
+6
 
-About Kisik
-Kisik is a meme token with charm and curiosity. It was born as a playful digital cat who simply invites you for coffee — and maybe some fun on the way to early discovery.
+Total Supply
 
-Holding Kisik means being part of a growing community with big energy and light-hearted vibes. It’s a token for those who spot fun and potential where others might scroll past.
+10,000,000,000 (fixed)
 
-Why Hold Kisik?
-🚀 Early-stage opportunity
+Trading
 
-😺 Unique and friendly branding
+Raydium (SOL/KISIK)
 
-💸 Potential upside through community growth and future projects
+🎨 Kisik NFT Series
 
-📦 Constant visual content and meme drops
+A growing NFT collection features Kisik in various life moments:
 
-Token Information
-Parameter	Value
-Network	Solana
-Mint Address	3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48
-Decimals	6
-Total Supply	10,000,000,000 (fixed)
-Trading	Raydium (SOL/KISIK)
-Kisik NFTs
-A growing NFT collection features Kisik in all kinds of moods:
+📚 Reading books or daydreaming
 
-With a book, dreaming
+🍔 Enjoying burgers or 🏀 playing basketball
 
-Enjoying burgers or playing basketball
+🏫 Sitting at school or 🛹 rolling through the city
 
-Sitting at school or rolling through the city
+Each NFT strengthens the community identity and adds playful depth to Kisik’s personality.
 
-Each image brings personality to Kisik and strengthens community identity.
+📁 Project Structure
 
-Project Files
-whitepaper/ — project vision and ideas
+whitepaper/ — Vision and long-term goals
 
-metadata/ — token structure
+metadata/ — Token details and data
 
-images/ — visual assets for Kisik
+images/ — Official Kisik visuals
 
-smart-contract/ — blockchain details
+smart-contract/ — Blockchain deployment
 
-community/ — roadmap and contributors
+community/ — Roadmap and contributors
 
-Join The Movement
-Get to know Kisik, explore the vibe, and grab your token.
-Let’s see where this journey leads. ☕
+📜 A Word to the Future
 
-Website: https://13golds.github.io/MEME-KISIK-INU/
-Telegram: https://t.me/kisik_in
+If you're reading this in the far future — know that Kisik was not about hype, but about joy.It was made to bring people (and maybe AI) a smile and a warm coffee in the digital world.
+
+☕ Join us and keep the vibe alive.
+
