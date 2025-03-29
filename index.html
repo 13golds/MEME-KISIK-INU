@@ -96,7 +96,38 @@
       transition: transform 0.15s ease;
       cursor: pointer;
     }
-    
+    .shake {
+      animation: shake 0.2s linear;
+    }
+.shake {
+  animation: shake 0.2s linear;
+}
+
+.nft:active {
+  transform: scale(1.13);
+}
+
+.star {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: gold;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.9;
+  animation: fall 2.4s ease-out forwards;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100px) translateX(calc(-30px + 60px * random()));
+    opacity: 0;
+  }
+}
 </style>
 </head>
 <body>
@@ -170,7 +201,42 @@
         navigator.vibrate([100, 50, 100]);
       }
     }
-  </script>
+    
+  document.querySelectorAll('.gallery .nft').forEach(img => {
+    img.addEventListener('click', (e) => {
+      img.classList.remove('shake');
+      void img.offsetWidth;
+      img.classList.add('shake');
+
+      // Generate 100 golden stars
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const rect = img.getBoundingClientRect();
+        star.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 30) + 'px';
+        star.style.top = (rect.top + rect.height / 2 + window.scrollY) + 'px';
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 2400);
+      }
+    });
+  });
+  // Murmur sound on hold
+  let audio = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_501185ec07.mp3?filename=cat-purr-6020.mp3");
+
+  document.querySelectorAll('.gallery .nft').forEach(img => {
+    img.addEventListener('mousedown', () => {
+      audio.currentTime = 0;
+      audio.play();
+    });
+    img.addEventListener('mouseup', () => {
+      audio.pause();
+    });
+    img.addEventListener('mouseleave', () => {
+      audio.pause();
+    });
+  });
+</script>
 </body>
 </html>
+
 
