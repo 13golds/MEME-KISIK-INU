@@ -13,10 +13,17 @@
       color: #fff;
       text-align: center;
       padding: 40px;
-      background-image: url('images/galaxy_background.gif');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      overflow: hidden;
+    }
+    .background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover;
+      opacity: 0.35;
     }
     .logo {
       max-width: 160px;
@@ -57,6 +64,10 @@
   </style>
 </head>
 <body>
+  <video autoplay loop muted playsinline class="background-video">
+    <source src="images/galaxy_background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
   <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo" />
   <h1>Kisik Official Token</h1>
   <p>
@@ -88,4 +99,3 @@
   <script src="data.js"></script>
 </body>
 </html>
-
