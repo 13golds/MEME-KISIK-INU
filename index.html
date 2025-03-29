@@ -1,91 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kisik Official</title>
-  <link rel="icon" href="images/kisik_logo.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kisik Token</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #000;
+      padding: 0;
+      background-color: #111;
       color: #fff;
+      font-family: 'Arial', sans-serif;
       text-align: center;
       padding: 40px;
-      background-image: url('images/galaxy_background.gif');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
     }
     .logo {
-      max-width: 160px;
-      border-radius: 20px;
+      width: 140px;
+      border-radius: 12px;
     }
     h1 {
-      font-size: 2.2rem;
-      margin-top: 20px;
+      font-size: 2em;
+      margin-top: 0.5em;
     }
     p {
-      font-size: 1.1rem;
+      font-size: 1.1em;
       max-width: 600px;
       margin: 20px auto;
-    }
-    a {
-      color: #e27d60;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 40px;
-    }
-    .gallery img {
-      width: 180px;
-      height: auto;
-      border-radius: 15px;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-    }
-    footer {
-      margin-top: 40px;
-      font-size: 0.9rem;
-      color: #ccc;
+      line-height: 1.6em;
     }
   </style>
+<style>
+    .lang-switch {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+    }
+    .lang-switch button {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      margin: 0 2px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .lang-switch button:hover {
+      background-color: #555;
+    }
+    .lang {
+      display: none;
+    }
+    .lang.active {
+      display: block;
+    }
+  </style>
+  <script>
+    function switchLang(lang) {
+      document.querySelectorAll('.lang').forEach(el => el.classList.remove('active'));
+      document.querySelector('.lang-' + lang).classList.add('active');
+    }
+  </script>
 </head>
 <body>
-  <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo" />
-  <h1>Kisik Official Token</h1>
-  <p>
-    Kisik is a meme token created to support people with disabilities. Its symbol is a white cat in a floral scarf and sunglasses holding a warm cup of coffee — a sign of inclusion, peace and warmth in Web3.
-  </p>
-  <p>
-    🔗 <a href="https://birdeye.so/token/3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48?chain=solana" target="_blank">View on Birdeye</a><br/>
-    💱 <a href="https://raydium.io/swap/?inputMint=sol&outputMint=3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48" target="_blank">Swap on Raydium</a><br/>
-    💬 <a href="https://t.me/kisik_in" target="_blank">Join Telegram</a><br/>
-    📄 <a href="whitepaper/kisik_whitepaper.md" target="_blank">Read Whitepaper</a>
-  </p>
-  <div id="price" style="margin-top: 20px; font-size: 1.3rem;"></div>
-
-  <div class="gallery">
-    <img src="images/kisik_reads.png" alt="Kisik Reads">
-    <img src="images/kisik_with_burger.png" alt="Kisik with Burger">
-    <img src="images/kisik_at_school.png" alt="Kisik at School">
-    <img src="images/kisik_basket.png" alt="Kisik Basketball">
-    <img src="images/kisik_snou.png" alt="Kisik Snowboard">
-    <img src="images/kisik_roll.png" alt="Kisik on Rollers">
-    <img src="images/kisik_winter.png" alt="Kisik in Winter Hat">
-    <img src="images/kisik_phone.png" alt="Kisik with Phone">
-    <img src="images/kisik_brushes_teeth.png" alt="Kisik Brushes Teeth">
+  <div class="lang-switch">
+    <button onclick="switchLang('en')">EN</button>
+    <button onclick="switchLang('ru')">RU</button>
+    <button onclick="switchLang('es')">ES</button>
+    <button onclick="switchLang('fr')">FR</button>
   </div>
-
-  <footer>
-    &copy; 2025 Kisik Token by Gaudi. All rights reserved.
-  </footer>
-  <script src="data.js"></script>
+  <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo">
+  <div class="lang lang-en active">
+  <h1>Hi, my name is Kisik!</h1>
+  <p>
+    I'm here to offer you coffee ☕<br>
+    Add me to your wallet —<br>
+    I might just help make your dream come true!
+  </p>
+</div>
+<div class="lang lang-ru">
+  <h1>Привет, меня зовут Кисик!</h1>
+  <p>
+    Я угощаю тебя кофе ☕<br>
+    Заходи и добавь меня в свой кошелёк —<br>
+    Я знаю, как исполнить твою мечту!
+  </p>
+</div>
+<div class="lang lang-es">
+  <h1>¡Hola! Me llamo Kisik</h1>
+  <p>
+    Te invito a un café ☕<br>
+    Agrégame a tu billetera —<br>
+    ¡Quizás pueda ayudarte a cumplir tu sueño!
+  </p>
+</div>
+<div class="lang lang-fr">
+  <h1>Salut, je m'appelle Kisik !</h1>
+  <p>
+    Je t’offre un café ☕<br>
+    Ajoute-moi à ton portefeuille —<br>
+    Peut-être que je peux exaucer ton vœu !
+  </p>
+</div>
 </body>
 </html>
+
 
