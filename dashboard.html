@@ -3,86 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kisik Dashboard</title>
-  <style>
-    body { background-color: #111; color: #fff; font-family: 'Arial', sans-serif; text-align: center; padding: 40px; }
-    h1 { font-size: 2.5em; margin-bottom: 20px; }
-    p { font-size: 1.2em; margin: 10px 0; }
-    input { padding: 10px; width: 300px; border: none; border-radius: 5px; margin: 10px 0; }
-    button { padding: 10px 20px; margin-top: 20px; background-color: #7de2fc; color: #111; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; }
-    button:hover { background-color: #55c5e6; }
-    .referral { margin-top: 30px; }
-    .notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #7de2fc;
-      color: #111;
-      padding: 10px 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      display: none;
-      font-size: 1em;
-    }
-  </style>
+  <title>Kisik — Dashboard</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS UMD v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
-<body>
-  <h1>Welcome to Kisik's Secret Room! ☕</h1>
-  <p id="user-email">Loading your email...</p>
+<body class="min-h-screen flex flex-col items-center justify-center bg-[#111] text-white p-6">
 
-  <h2>Your Solana Address:</h2>
-  <input type="text" id="solana-address" placeholder="Enter your Solana address">
+  <h1 class="text-3xl font-semibold mb-6">Welcome to Kisik ☕</h1>
 
-  <div class="referral">
-    <h2>Your Referral Link:</h2>
-    <input type="text" id="referral-link" readonly>
-    <br>
-    <button onclick="copyReferral()">Copy Referral Link</button>
+  <p id="user-email" class="mb-8 text-lg">Loading…</p>
+
+  <div class="w-full max-w-md bg-[#1a1a1a] p-6 rounded-xl shadow-lg">
+    <h2 class="text-xl font-medium mb-4">Your referral link</h2>
+    <div class="flex gap-2 mb-4">
+      <input id="referral-link" type="text" readonly class="flex-1 px-3 py-2 rounded text-black" />
+      <button id="copyBtn" class="bg-orange-400 hover:bg-orange-500 px-4 py-2 rounded">Copy</button>
+    </div>
+    <div id="copyMsg" class="text-green-400 text-sm hidden">Copied ✓</div>
   </div>
 
-  <button onclick="logout()">Logout</button>
+  <!-- Simple buying guide -->
+  <div class="w-full max-w-md mt-10 bg-[#1a1a1a] p-6 rounded-xl shadow-lg">
+    <h2 class="text-xl font-medium mb-4">How to buy KISIK</h2>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+      <li>Install a Phantom wallet and add some SOL.</li>
+      <li>Open <a href="https://jup.ag" class="underline text-orange-300" target="_blank">Jupiter</a> and search “KISIK”.</li>
+      <li>Swap SOL → KISIK and confirm the transaction.</li>
+    </ol>
+  </div>
 
-  <div class="notification" id="notification">Referral link copied!</div>
+  <button id="logoutBtn" class="mt-12 underline text-orange-300">Logout</button>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+<script>
+const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    const supabase = createClient('https://rrfcfkqxybhbouqytiwg.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0');
+const emailEl   = document.getElementById('user-email');
+const refInput  = document.getElementById('referral-link');
+const copyBtn   = document.getElementById('copyBtn');
+const copyMsg   = document.getElementById('copyMsg');
+const logoutBtn = document.getElementById('logoutBtn');
 
-    async function loadUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        document.getElementById('user-email').textContent = `Your email: ${user.email}`;
-        const referral = `https://13golds.github.io/MEME-KISIK-INU/?ref=${user.id}`;
-        document.getElementById('referral-link').value = referral;
-      } else {
-        window.location.href = "index.html";
-      }
-    }
+(async () => {
+  // Check current session
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    location.replace('login.html');
+    return;
+  }
+  const user = session.user;
+  emailEl.textContent = `Logged in as ${user.email}`;
 
-    loadUser();
+  // Fetch existing referral code or create a new one
+  let { data: profile, error } = await supabase
+    .from('profiles')
+    .select('referral_code')
+    .eq('id', user.id)
+    .single();
 
-    function copyReferral() {
-      const copyText = document.getElementById("referral-link");
-      copyText.select();
-      document.execCommand("copy");
-      showNotification();
-    }
+  let code;
+  if (error && error.code === 'PGRST116') { // no row → create profile
+    code = crypto.randomUUID().slice(0, 8);
+    await supabase.from('profiles').insert({ id: user.id, referral_code: code });
+  } else if (profile) {
+    code = profile.referral_code;
+  } else if (error) {
+    console.error(error);
+    alert('Error loading profile');
+  }
 
-    function showNotification() {
-      const notification = document.getElementById("notification");
-      notification.style.display = "block";
-      setTimeout(() => {
-        notification.style.display = "none";
-      }, 2000);
-    }
+  if (code) {
+    refInput.value = `${location.origin}/signup.html?ref=${code}`;
+  }
+})();
 
-    async function logout() {
-      await supabase.auth.signOut();
-      window.location.href = "index.html";
-    }
-  </script>
+// Copy link to clipboard
+copyBtn.addEventListener('click', async () => {
+  await navigator.clipboard.writeText(refInput.value);
+  copyMsg.classList.remove('hidden');
+  setTimeout(() => copyMsg.classList.add('hidden'), 2000);
+});
+
+logoutBtn.addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  location.replace('login.html');
+});
+</script>
 </body>
 </html>
-
-
