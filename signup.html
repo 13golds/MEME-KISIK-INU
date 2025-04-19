@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kisik — Sign‑up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#000428] to-[#004e92] text-white p-4">
+
+  <img src="https://raw.githubusercontent.com/13golds/MEME-KISIK-INU/main/images/image.png" alt="Kisik logo" class="w-28 mb-6">
+  <h1 class="text-2xl font-semibold mb-2">Create your Kisik account</h1>
+
+  <div id="msg" class="text-yellow-300 mb-4"></div>
+
+  <!-- Step 1 — referral code validation -->
+  <div id="stepReferral" class="w-full max-w-xs flex flex-col gap-3">
+    <input id="refInput" type="text" placeholder="Enter referral code" class="px-3 py-2 rounded text-black" required>
+    <button id="checkRef" class="bg-orange-400 hover:bg-orange-500 rounded px-3 py-2">Validate code</button>
+  </div>
+
+  <!-- Step 2 — sign‑up form -->
+  <form id="stepSignup" class="w-full max-w-xs flex-col gap-3 hidden">
+    <input id="email" type="email" placeholder="Email" class="px-3 py-2 mb-2 rounded text-black" required>
+    <input id="pass1" type="password" placeholder="Password" class="px-3 py-2 mb-2 rounded text-black" required>
+    <input id="pass2" type="password" placeholder="Repeat password" class="px-3 py-2 mb-2 rounded text-black" required>
+    <button class="bg-orange-400 hover:bg-orange-500 rounded px-3 py-2 w-full">Sign up</button>
+  </form>
+
+  <!-- Step 3 — confirmation message -->
+  <div id="stepDone" class="hidden text-center">
+    <p class="mb-4">Check your inbox and confirm the email to finish registration.</p>
+    <a href="login.html" class="underline text-orange-300">Back to login</a>
+  </div>
+
+<script>
+const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0'; 
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+const qs = new URLSearchParams(location.search);
+const urlRefCode = qs.get('ref') || '';
+
+const msg          = document.getElementById('msg');
+const stepReferral = document.getElementById('stepReferral');
+const stepSignup   = document.getElementById('stepSignup');
+const stepDone     = document.getElementById('stepDone');
+const refInput     = document.getElementById('refInput');
+const checkRefBtn  = document.getElementById('checkRef');
+
+refInput.value = urlRefCode;
+
+checkRefBtn.addEventListener('click', async () => {
+  const code = refInput.value.trim();
+  if (!code) { msg.textContent = 'Enter a referral code'; return; }
+  msg.textContent = 'Checking…';
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('referral_code', code)
+    .single();
+  if (error || !data) {
+    msg.textContent = 'Invalid referral code';
+    return;
+  }
+  window.referredBy = data.id;
+  stepReferral.classList.add('hidden');
+  stepSignup.classList.remove('hidden');
+  msg.textContent = '';
+});
+
+stepSignup.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const p1 = document.getElementById('pass1').value;
+  const p2 = document.getElementById('pass2').value;
+  if (p1 !== p2) { msg.textContent = 'Passwords do not match'; return; }
+
+  msg.textContent = 'Signing you up…';
+  const { error } = await supabase.auth.signUp({
+    email,
+    password: p1,
+    options: {
+      data: { referred_by: window.referredBy }
+    }
+  });
+  if (error) { msg.textContent = error.message; return; }
+
+  stepSignup.classList.add('hidden');
+  stepDone.classList.remove('hidden');
+  msg.textContent = '';
+});
+</script>
+</body>
+</html>
