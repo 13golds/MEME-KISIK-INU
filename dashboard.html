@@ -4,93 +4,114 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kisik — Dashboard</title>
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS UMD v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center bg-[#111] text-white p-6">
+<body class="min-h-screen flex flex-col items-center bg-[#111] text-white p-6">
 
   <h1 class="text-3xl font-semibold mb-6">Welcome to Kisik ☕</h1>
-
   <p id="user-email" class="mb-8 text-lg">Loading…</p>
 
-  <div class="w-full max-w-md bg-[#1a1a1a] p-6 rounded-xl shadow-lg">
-    <h2 class="text-xl font-medium mb-4">Your referral link</h2>
-    <div class="flex gap-2 mb-4">
-      <input id="referral-link" type="text" readonly class="flex-1 px-3 py-2 rounded text-black" />
-      <button id="copyBtn" class="bg-orange-400 hover:bg-orange-500 px-4 py-2 rounded">Copy</button>
-    </div>
-    <div id="copyMsg" class="text-green-400 text-sm hidden">Copied ✓</div>
+  <!-- NAV tabs -->
+  <div class="mb-8 space-x-3">
+    <button id="tabRef"   class="tab active">Referral</button>
+    <button id="tabGuide" class="tab">Guide</button>
+    <button id="tabBonus" class="tab">Bonus</button>
   </div>
 
-  <!-- Simple buying guide -->
-  <div class="w-full max-w-md mt-10 bg-[#1a1a1a] p-6 rounded-xl shadow-lg">
+  <!-- Referral section -->
+  <div id="pane-ref" class="pane w-full max-w-md hidden flex-col gap-4"></div>
+
+  <!-- Guide section -->
+  <div id="pane-guide" class="pane w-full max-w-md hidden">
     <h2 class="text-xl font-medium mb-4">How to buy KISIK</h2>
     <ol class="list-decimal list-inside space-y-1 text-sm">
-      <li>Install a Phantom wallet and add some SOL.</li>
+      <li>Install Phantom wallet and add some SOL.</li>
       <li>Open <a href="https://jup.ag" class="underline text-orange-300" target="_blank">Jupiter</a> and search “KISIK”.</li>
       <li>Swap SOL → KISIK and confirm the transaction.</li>
     </ol>
   </div>
 
-  <button id="logoutBtn" class="mt-12 underline text-orange-300">Logout</button>
+  <!-- Bonus section -->
+  <div id="pane-bonus" class="pane w-full max-w-md hidden flex-col gap-4">
+    <h2 class="text-xl font-medium">Bonus wallet</h2>
+    <p class="text-sm text-slate-300">Enter Solana address where you want to receive future KISIK rewards.</p>
+    <input id="bonusAddress" type="text" placeholder="Solana wallet (e.g. 3DbBHBf...)" class="px-3 py-2 rounded text-black" maxlength="44">
+    <button id="saveBonus" class="bg-orange-400 hover:bg-orange-500 rounded px-3 py-2 self-start">Save</button>
+    <div id="bonusMsg" class="text-green-400 text-sm"></div>
+  </div>
 
+  <button id="logoutBtn" class="mt-12 underline text-orange-300 self-center">Logout</button>
+
+<style>
+.tab{padding:6px 14px;border-radius:6px;background:#333;font-size:0.9em} .tab.active{background:#555}
+.pane{background:#1a1a1a;padding:24px;border-radius:12px;}
+</style>
 <script>
 const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0';
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-const emailEl   = document.getElementById('user-email');
-const refInput  = document.getElementById('referral-link');
-const copyBtn   = document.getElementById('copyBtn');
-const copyMsg   = document.getElementById('copyMsg');
-const logoutBtn = document.getElementById('logoutBtn');
+let user, referralCode;
+const emailEl     = document.getElementById('user-email');
+const paneRef     = document.getElementById('pane-ref');
+const bonusInput  = document.getElementById('bonusAddress');
+const bonusMsg    = document.getElementById('bonusMsg');
 
-(async () => {
-  // Check current session
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    location.replace('login.html');
-    return;
-  }
-  const user = session.user;
+// ------- session check -------
+(async ()=>{
+  const { data:{session} } = await supabase.auth.getSession();
+  if(!session){ location.replace('login.html'); return; }
+  user = session.user;
   emailEl.textContent = `Logged in as ${user.email}`;
 
-  // Fetch existing referral code or create a new one
-  let { data: profile, error } = await supabase
-    .from('profiles')
-    .select('referral_code')
-    .eq('id', user.id)
-    .single();
-
-  let code;
-  if (error && error.code === 'PGRST116') { // no row → create profile
-    code = crypto.randomUUID().slice(0, 8);
-    await supabase.from('profiles').insert({ id: user.id, referral_code: code });
-  } else if (profile) {
-    code = profile.referral_code;
-  } else if (error) {
-    console.error(error);
-    alert('Error loading profile');
+  // fetch / create profile
+  let { data:profile, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+  if(error && error.code==='PGRST116'){
+     const code = crypto.randomUUID().slice(0,8);
+     ({ data:profile } = await supabase.from('profiles').insert({id:user.id, referral_code:code}).select().single());
   }
-
-  if (code) {
-    refInput.value = `${location.origin}/signup.html?ref=${code}`;
-  }
+  referralCode = profile.referral_code;
+  bonusInput.value = profile.bonus_wallet ?? '';
+  renderReferral();
 })();
 
-// Copy link to clipboard
-copyBtn.addEventListener('click', async () => {
-  await navigator.clipboard.writeText(refInput.value);
-  copyMsg.classList.remove('hidden');
-  setTimeout(() => copyMsg.classList.add('hidden'), 2000);
+// ------- Referral pane -------
+function renderReferral(){
+  const link = `${location.origin}/signup.html?ref=${referralCode}`;
+  paneRef.innerHTML = `<h2 class="text-xl font-medium mb-4">Your referral link</h2>
+    <div class="flex gap-2 mb-4"><input value="${link}" readonly class="flex-1 px-3 py-2 rounded text-black" />
+    <button class="bg-orange-400 hover:bg-orange-500 px-4 py-2 rounded" onclick="copyLink('${link}')">Copy</button></div>`;
+}
+function copyLink(text){ navigator.clipboard.writeText(text); alert('Copied'); }
+
+// ------- Bonus save -------
+document.getElementById('saveBonus').addEventListener('click', async ()=>{
+  const addr = bonusInput.value.trim();
+  if(!addr){ bonusMsg.textContent='Enter address'; return; }
+  const { error } = await supabase.from('profiles').update({ bonus_wallet: addr }).eq('id', user.id);
+  bonusMsg.textContent = error ? error.message : 'Saved ✓';
 });
 
-logoutBtn.addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  location.replace('login.html');
+// ------- Tabs -------
+const tabs = {ref:['tabRef','pane-ref'], guide:['tabGuide','pane-guide'], bonus:['tabBonus','pane-bonus']};
+Object.entries(tabs).forEach(([key,[btnId,paneId]])=>{
+  document.getElementById(btnId).addEventListener('click',()=>setTab(key));
 });
+function setTab(active){
+  Object.entries(tabs).forEach(([key,[btnId,paneId]])=>{
+    document.getElementById(btnId).classList.toggle('active',key===active);
+    document.getElementById(paneId).classList.toggle('hidden',key!==active);
+  });
+}
+setTab('ref');
+
+// ------- logout -------
+logoutBtn.addEventListener('click', async ()=>{ await supabase.auth.signOut(); location.replace('login.html'); });
 </script>
 </body>
 </html>
