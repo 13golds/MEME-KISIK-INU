@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kisik — Sign‑Up</title>
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase JS UMD v2 -->
+  <!-- Supabase JS UMD -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#000428] to-[#004e92] text-white p-4">
@@ -30,54 +30,60 @@
     <button type="submit" class="bg-orange-400 hover:bg-orange-500 rounded px-3 py-2">Sign Up</button>
   </form>
 
-  <!-- Step 3: Confirmation & Resend -->
+  <!-- Step 3: Confirmation message -->
   <div id="stepDone" class="hidden text-center">
-    <p class="mb-4">Check your inbox to confirm your email and finish registration.</p>
+    <p class="mb-4">Thank you! Please check your inbox to confirm your email.</p>
     <a href="login.html" class="underline text-orange-300">Back to login</a>
-    <button id="resendBtn" class="mt-4 bg-gray-600 hover:bg-gray-700 rounded px-3 py-2">Resend confirmation email</button>
-    <div id="resendMsg" class="text-sm text-yellow-300 mt-2"></div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initialize Supabase client
-      const SUPABASE_URL = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
+    document.addEventListener('DOMContentLoaded', async () => {
+      const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
       const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0';
-      const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-      // Redirect if already logged in
-      (async () => {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) window.location.replace('dashboard.html');
-      })();
+      // Handle email confirmation link
+      const { data: { session: urlSession } } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const sessionActive = currentSession || urlSession;
+      if (sessionActive) {
+        location.replace('dashboard.html');
+        return;
+      }
 
-      // Elements
-      const msg = document.getElementById('msg');
-      const stepReferral = document.getElementById('stepReferral');
-      const stepSignup   = document.getElementById('stepSignup');
-      const stepDone     = document.getElementById('stepDone');
-      const refInput     = document.getElementById('refInput');
-      const checkRefBtn  = document.getElementById('checkRef');
-      const resendBtn    = document.getElementById('resendBtn');
-      const resendMsg    = document.getElementById('resendMsg');
+      // DOM refs
+      const msg        = document.getElementById('msg');
+      const stepRef    = document.getElementById('stepReferral');
+      const stepSignup = document.getElementById('stepSignup');
+      const stepDone   = document.getElementById('stepDone');
+      const refInput   = document.getElementById('refInput');
+      const checkRef   = document.getElementById('checkRef');
 
-      // Autofill referral code from URL
-      const urlParams = new URLSearchParams(window.location.search);
-      refInput.value = urlParams.get('ref') || '';
+      // Prefill referral from URL
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('ref')) {
+        refInput.value = params.get('ref');
+      }
 
       // Step 1: Validate referral code
-      checkRefBtn.addEventListener('click', async () => {
+      checkRef.addEventListener('click', async () => {
         const code = refInput.value.trim();
-        if (!code) { msg.textContent = 'Enter a referral code'; return; }
+        if (!code) {
+          msg.textContent = 'Enter a referral code';
+          return;
+        }
         msg.textContent = 'Checking…';
-        const { data, error } = await supabaseClient
+        const { data, error } = await supabase
           .from('profiles')
           .select('id')
           .eq('referral_code', code)
           .single();
-        if (error || !data) { msg.textContent = 'Invalid referral code'; return; }
+        if (error || !data) {
+          msg.textContent = 'Invalid referral code';
+          return;
+        }
         window.referredBy = data.id;
-        stepReferral.classList.add('hidden');
+        stepRef.classList.add('hidden');
         stepSignup.classList.remove('hidden');
         msg.textContent = '';
       });
@@ -88,14 +94,16 @@
         const email = document.getElementById('email').value.trim();
         const p1    = document.getElementById('pass1').value;
         const p2    = document.getElementById('pass2').value;
-        if (p1 !== p2) { msg.textContent = 'Passwords do not match'; return; }
+        if (p1 !== p2) {
+          msg.textContent = 'Passwords do not match';
+          return;
+        }
         msg.textContent = 'Signing you up…';
-        window.signUpEmail   = email;
-        window.signUpOptions = { data: { referred_by: window.referredBy } };
-        const { error } = await supabaseClient.auth.signUp({
+        const options = { data: { referred_by: window.referredBy } };
+        const { data: signupData, error } = await supabase.auth.signUp({
           email,
           password: p1,
-          options: window.signUpOptions
+          options
         });
         if (error) {
           if (error.message.toLowerCase().includes('already registered')) {
@@ -105,23 +113,18 @@
           }
           return;
         }
+        // If session returned, skip confirmation
+        if (signupData && signupData.session) {
+          location.replace('dashboard.html');
+          return;
+        }
+        // Show confirmation message
         stepSignup.classList.add('hidden');
         stepDone.classList.remove('hidden');
         msg.textContent = '';
-      });
-
-      // Step 3: Resend confirmation
-      resendBtn.addEventListener('click', async () => {
-        resendMsg.textContent = 'Resending…';
-        const { error } = await supabaseClient.auth.signUp({
-          email: window.signUpEmail,
-          password: '',
-          options: window.signUpOptions
-        });
-        if (error) resendMsg.textContent = error.message;
-        else resendMsg.textContent = 'Confirmation email resent.';
       });
     });
   </script>
 </body>
 </html>
+
