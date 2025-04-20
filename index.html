@@ -1,117 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W3TWYFM5YZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-W3TWYFM5YZ');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kisik Token</title>
-  <!-- Supabase JS UMD v2 -->
+  <title>Kisik — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <style>
-    body{margin:0;padding:0;background:#111;color:#fff;font-family:'Arial',sans-serif;text-align:center;padding:40px;}
-    .logo{width:140px;border-radius:12px;}
-    h1{font-size:2em;margin-top:0.5em;}
-    p{font-size:1.1em;max-width:600px;margin:20px auto;line-height:1.6em;}
-    .topbar{position:absolute;top:15px;right:20px;display:flex;gap:6px;}
-    .topbar button,.topbar a{background:#333;color:#fff;border:none;padding:6px 10px;border-radius:5px;cursor:pointer;font-size:0.9em;text-decoration:none;}
-    .topbar button:hover,.topbar a:hover{background:#555;}
-    .lang{display:none;}
-    .lang.active{display:block;}
-    .links{margin-top:30px;}
-    .links a{display:block;margin:5px 0;color:#7de2fc;text-decoration:none;font-size:1.05em;}
-    /* NFT gallery styles kept unchanged */
-    .gallery{display:flex;flex-wrap:wrap;justify-content:center;gap:15px;margin:40px auto 0;max-width:800px;}
-    .gallery img.nft{width:150px;border-radius:12px;box-shadow:0 0 8px rgba(255,255,255,0.2);transition:transform 0.15s ease;cursor:pointer;}
-    .nft:active{transform:scale(1.13);} .shake{animation:shake 0.2s linear;} @keyframes shake{0%{transform:translate(1px,1px) rotate(0deg);}25%{transform:translate(-1px,-2px) rotate(-1deg);}50%{transform:translate(-3px,1px) rotate(1deg);}75%{transform:translate(3px,1px) rotate(0deg);}100%{transform:translate(1px,-1px) rotate(1deg);}}
-    .star{position:absolute;width:6px;height:6px;background:gold;border-radius:50%;pointer-events:none;opacity:0.9;animation:fall 2.4s ease-out forwards;} @keyframes fall{0%{transform:translateY(0) translateX(0);opacity:1;}100%{transform:translateY(100px) translateX(var(--offset-x));opacity:0;}}
-  </style>
 </head>
-<body>
-  <!-- Top bar: language switch + login/dashboard -->
-  <div class="topbar">
-    <button onclick="switchLang('en')">EN</button>
-    <button onclick="switchLang('ru')">RU</button>
-    <button onclick="switchLang('es')">ES</button>
-    <button onclick="switchLang('fr')">FR</button>
-    <a id="loginBtn" href="login.html">Login</a>
-  </div>
+<body class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-800 to-slate-900 text-white p-4">
 
-  <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo">
+  <!-- Small logo -->
+  <img src="https://raw.githubusercontent.com/13golds/MEME-KISIK-INU/main/images/kisik_logo.png" alt="Kisik logo" class="w-24 mb-6">
 
-  <!-- Multilingual blocks -->
-  <div class="lang lang-en active">
-    <h1>Hi, my name is Kisik!</h1>
-    <p>I'm here to offer you coffee ☕<br>Add me to your wallet —<br>I might just help make your dream come true!</p>
-  </div>
-  <div class="lang lang-ru">
-    <h1>Привет, меня зовут Кисик!</h1>
-    <p>Я угощаю тебя кофе ☕<br>Заходи и добавь меня в свой кошелёк —<br>Я знаю, как исполнить твою мечту!</p>
-  </div>
-  <div class="lang lang-es">
-    <h1>¡Hola! Me llamo Kisik</h1>
-    <p>Te invito a un café ☕<br>Agrégame a tu billetera —<br>¡Quizás pueda ayudarte a cumplir tu sueño!</p>
-  </div>
-  <div class="lang lang-fr">
-    <h1>Salut, je m'appelle Kisik !</h1>
-    <p>Je t’offre un café ☕<br>Ajoute-moi à ton portefeuille —<br>Peut-être que je peux exaucer ton vœu !</p>
-  </div>
+  <h1 class="text-2xl font-semibold mb-6">Log in to Kisik</h1>
 
-  <!-- NFT gallery -->
-  <div class="gallery">
-    <img class="nft" src="images/kisik_reads.png" alt="Kisik Reads" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_with_burger.png" alt="Kisik with Burger" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_at_school.png" alt="Kisik at School" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_basket.png" alt="Kisik Basketball" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_snou.png" alt="Kisik Snowboard" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_roll.png" alt="Kisik on Rollers" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_winter.png" alt="Kisik in Winter Hat" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_phone.png" alt="Kisik with Phone" onclick="vibrateDevice()">
-    <img class="nft" src="images/kisik_brushes_teeth.png" alt="Kisik Brushes Teeth" onclick="vibrateDevice()">
-  </div>
+  <!-- Login form -->
+  <form id="loginForm" class="w-full max-w-xs flex flex-col gap-3">
+    <input id="email"   type="email"    placeholder="Email"    class="px-3 py-2 rounded text-black" required>
+    <input id="password" type="password" placeholder="Password" class="px-3 py-2 rounded text-black" required>
+    <button class="bg-orange-400 hover:bg-orange-500 rounded px-3 py-2">Login</button>
+  </form>
 
-  <!-- Links -->
-  <div class="links">
-    💱 <a href="https://jup.ag/swap/SOL-3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48" target="_blank">Swap on Jupiter</a>
-    💱 <a href="https://www.dextools.io/app/en/solana/pair-explorer/5dvNuWurrZNb3bePgUbJVLZ4x2zxNsDhdczKD3UCrFRm" target="_blank">DEXTools Pair Explorer</a>
-    💱 <a href="https://raydium.io/swap/?inputMint=sol&outputMint=3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48" target="_blank">Swap on Raydium</a>
-    🔗 <a href="https://birdeye.so/token/3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48?chain=solana" target="_blank">View on Birdeye</a>
-    🌐 <a href="https://13golds.github.io/MEME-KISIK-INU/" target="_blank">Website</a>
-    💬 <a href="https://t.me/kisik_in" target="_blank">Telegram</a>
-    💬 <a href="https://x.com/Sam_Gold_b/status/1904797289991860641" target="_blank">Twitter</a>
-  </div>
+  <!-- Error / status message -->
+  <div id="msg" class="mt-4 text-red-400 text-sm"></div>
+
+  <!-- Link to sign‑up page (user receives it with referral code) -->
+  <p class="mt-6 text-sm text-slate-300">Don’t have an account? <a href="signup.html" class="underline text-orange-300">Sign up</a></p>
 
 <script>
-// Language switch
-function switchLang(lang){
-  document.querySelectorAll('.lang').forEach(el=>el.classList.remove('active'));
-  document.querySelector('.lang-'+lang).classList.add('active');
-  localStorage.setItem('ksk_lang',lang);
-}
-// Restore saved language
-const savedLang = localStorage.getItem('ksk_lang')||'en';
-switchLang(savedLang);
+const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-function vibrateDevice(){ if(navigator.vibrate){ navigator.vibrate([100,50,100]); } }
+// Redirect if already logged in
+(async ()=>{
+  const { data:{session} } = await supabase.auth.getSession();
+  if(session){ location.replace('dashboard.html'); }
+})();
 
-// NFT shake & stars (unchanged)
- document.querySelectorAll('.gallery .nft').forEach(img=>{
-   img.addEventListener('click',()=>{
-     img.classList.remove('shake'); void img.offsetWidth; img.classList.add('shake');
-     for(let i=0;i<100;i++){ const star=document.createElement('div'); star.className='star'; const rect=img.getBoundingClientRect(); const offsetX=(Math.random()-0.5)*60; star.style.setProperty('--offset-x',offsetX+'px'); star.style.left=(rect.left+rect.width/2+offsetX)+'px'; star.style.top=(rect.top+rect.height/2+window.scrollY)+'px'; document.body.appendChild(star); setTimeout(()=>star.remove(),2400);} });});
-let audio=new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_501185ec07.mp3?filename=cat-purr-6020.mp3');
- document.querySelectorAll('.gallery .nft').forEach(img=>{
-   img.addEventListener('mousedown',()=>{audio.currentTime=0;audio.play();});
-   img.addEventListener('mouseup',()=>audio.pause());
-   img.addEventListener('mouseleave',()=>audio.pause());});
+// Handle login
+const form = document.getElementById('loginForm');
+const msg  = document.getElementById('msg');
 
-// Supabase session check for login/dashboard button
-const SUPABASE_URL='https://rrfcfkqxybhbouqytiwg.supabase.co';
-const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5
-
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  msg.textContent = '';
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){ msg.textContent = error.message; return; }
+  location.replace('dashboard.html');
+});
+</script>
+</body>
+</html>
 
 
