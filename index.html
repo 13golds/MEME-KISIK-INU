@@ -23,6 +23,9 @@
     .links a { display:block; margin:5px 0; color:#7de2fc; text-decoration:none; font-size:1.05em; }
     .gallery { display:flex; flex-wrap:wrap; justify-content:center; gap:15px; margin:40px auto; max-width:800px; }
     .gallery img { width:150px; border-radius:12px; box-shadow:0 0 8px rgba(255,255,255,0.2); cursor:pointer; transition:transform .15s ease; }
+    .gallery img.highlight { width:250px; }
+    .gallery img:active { transform:scale(1.1); }
+    .gallery img { width:150px; border-radius:12px; box-shadow:0 0 8px rgba(255,255,255,0.2); cursor:pointer; transition:transform .15s ease; }
     .gallery img:active { transform:scale(1.1); }
     .star { position:absolute; width:6px; height:6px; background:gold; border-radius:50%; opacity:0.9; animation:fall 2.4s ease-out forwards; }
     @keyframes fall { to { transform:translateY(100px) translateX(var(--x)); opacity:0; } }
@@ -60,7 +63,7 @@
     <img src="images/kisik_with_burger.png" alt="Kisik with Burger">
     <img src="images/kisik_at_school.png" alt="Kisik at School">
     <img src="images/kisik_basket.png" alt="Kisik Basketball">
-    <img src="images/kisik_snow.png" alt="Kisik Snowboard">
+    <img src="images/kisik_snow.png" alt="Kisik Snowboard" class="highlight">
     <img src="images/kisik_roll.png" alt="Kisik on Rollers">
     <img src="images/kisik_winter.png" alt="Kisik in Winter Hat">
     <img src="images/kisik_phone.png" alt="Kisik with Phone">
