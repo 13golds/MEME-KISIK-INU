@@ -35,61 +35,59 @@
   </div>
 
 <script>
-const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0'; 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+window.addEventListener('DOMContentLoaded', () => {
+  // Initialize Supabase client
+  const SUPABASE_URL  = 'https://rrfcfkqxybhbouqytiwg.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-const qs = new URLSearchParams(location.search);
-const urlRefCode = qs.get('ref') || '';
+  // Elements
+  const msg          = document.getElementById('msg');
+  const stepReferral = document.getElementById('stepReferral');
+  const stepSignup   = document.getElementById('stepSignup');
+  const stepDone     = document.getElementById('stepDone');
+  const refInput     = document.getElementById('refInput');
+  const checkRefBtn  = document.getElementById('checkRef');
 
-const msg          = document.getElementById('msg');
-const stepReferral = document.getElementById('stepReferral');
-const stepSignup   = document.getElementById('stepSignup');
-const stepDone     = document.getElementById('stepDone');
-const refInput     = document.getElementById('refInput');
-const checkRefBtn  = document.getElementById('checkRef');
+  // Autofill referral code
+  const urlParams = new URLSearchParams(window.location.search);
+  refInput.value = urlParams.get('ref') || '';
 
-refInput.value = urlRefCode;
-
-checkRefBtn.addEventListener('click', async () => {
-  const code = refInput.value.trim();
-  if (!code) { msg.textContent = 'Enter a referral code'; return; }
-  msg.textContent = 'Checking…';
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('referral_code', code)
-    .single();
-  if (error || !data) {
-    msg.textContent = 'Invalid referral code';
-    return;
-  }
-  window.referredBy = data.id;
-  stepReferral.classList.add('hidden');
-  stepSignup.classList.remove('hidden');
-  msg.textContent = '';
-});
-
-stepSignup.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('email').value.trim();
-  const p1 = document.getElementById('pass1').value;
-  const p2 = document.getElementById('pass2').value;
-  if (p1 !== p2) { msg.textContent = 'Passwords do not match'; return; }
-
-  msg.textContent = 'Signing you up…';
-  const { error } = await supabase.auth.signUp({
-    email,
-    password: p1,
-    options: {
-      data: { referred_by: window.referredBy }
-    }
+  // Step 1: Validate referral code
+  checkRefBtn.addEventListener('click', async () => {
+    const code = refInput.value.trim();
+    if (!code) { msg.textContent = 'Enter a referral code'; return; }
+    msg.textContent = 'Checking…';
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .select('id')
+      .eq('referral_code', code)
+      .single();
+    if (error || !data) { msg.textContent = 'Invalid referral code'; return; }
+    window.referredBy = data.id;
+    stepReferral.classList.add('hidden');
+    stepSignup.classList.remove('hidden');
+    msg.textContent = '';
   });
-  if (error) { msg.textContent = error.message; return; }
 
-  stepSignup.classList.add('hidden');
-  stepDone.classList.remove('hidden');
-  msg.textContent = '';
+  // Step 2: Sign up user
+  stepSignup.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const p1    = document.getElementById('pass1').value;
+    const p2    = document.getElementById('pass2').value;
+    if (p1 !== p2) { msg.textContent = 'Passwords do not match'; return; }
+    msg.textContent = 'Signing you up…';
+    const { error } = await supabaseClient.auth.signUp({
+      email,
+      password: p1,
+      options: { data: { referred_by: window.referredBy } }
+    });
+    if (error) { msg.textContent = error.message; return; }
+    stepSignup.classList.add('hidden');
+    stepDone.classList.remove('hidden');
+    msg.textContent = '';
+  });
 });
 </script>
 </body>
