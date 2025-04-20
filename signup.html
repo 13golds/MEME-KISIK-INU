@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kisik — Sign‑up</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com">  // Resend confirmation handler
+  document.getElementById('resendBtn').addEventListener('click', async () => {
+    resendMsg.textContent = 'Resending...';
+    const { error } = await supabaseClient.auth.signUp({
+      email: window.signUpEmail,
+      password: '',  // Supabase re-sends without a password
+      options: window.signUpOptions
+    });
+    if (error) resendMsg.textContent = error.message;
+    else resendMsg.textContent = 'Confirmation email resent.';
+  });
+</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#000428] to-[#004e92] text-white p-4">
@@ -32,6 +43,9 @@
   <div id="stepDone" class="hidden text-center">
     <p class="mb-4">Check your inbox and confirm the email to finish registration.</p>
     <a href="login.html" class="underline text-orange-300">Back to login</a>
+    <!-- Resend confirmation button -->
+    <button id="resendBtn" class="mt-4 bg-gray-600 hover:bg-gray-700 rounded px-3 py-2">Resend confirmation email</button>
+    <div id="resendMsg" class="text-sm text-yellow-300 mt-2"></div>
   </div>
 
 <script>
@@ -41,6 +55,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0';
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
+  // If already confirmed/logged in, redirect to dashboard (no resend needed)
+  (async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      location.replace('dashboard.html');
+    }
+  })();
+
   // Elements
   const msg          = document.getElementById('msg');
   const stepReferral = document.getElementById('stepReferral');
@@ -48,12 +70,14 @@ window.addEventListener('DOMContentLoaded', () => {
   const stepDone     = document.getElementById('stepDone');
   const refInput     = document.getElementById('refInput');
   const checkRefBtn  = document.getElementById('checkRef');
+  const resendBtn    = document.getElementById('resendBtn');
+  const resendMsg    = document.getElementById('resendMsg');
 
   // Autofill referral code
   const urlParams = new URLSearchParams(window.location.search);
   refInput.value = urlParams.get('ref') || '';
 
-  // Step 1: Validate referral code
+  // Step 1: Validate referral code
   checkRefBtn.addEventListener('click', async () => {
     const code = refInput.value.trim();
     if (!code) { msg.textContent = 'Enter a referral code'; return; }
@@ -70,7 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
     msg.textContent = '';
   });
 
-  // Step 2: Sign up user
+  // Step 2: Sign up user
   stepSignup.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
@@ -78,15 +102,30 @@ window.addEventListener('DOMContentLoaded', () => {
     const p2    = document.getElementById('pass2').value;
     if (p1 !== p2) { msg.textContent = 'Passwords do not match'; return; }
     msg.textContent = 'Signing you up…';
+    // Save for potential resend
+    window.signUpEmail   = email;
+    window.signUpOptions = { data: { referred_by: window.referredBy } };
     const { error } = await supabaseClient.auth.signUp({
       email,
       password: p1,
-      options: { data: { referred_by: window.referredBy } }
+      options: window.signUpOptions
     });
     if (error) { msg.textContent = error.message; return; }
     stepSignup.classList.add('hidden');
     stepDone.classList.remove('hidden');
     msg.textContent = '';
+  });
+
+  // Step 3: Resend confirmation before final verification
+  resendBtn.addEventListener('click', async () => {
+    resendMsg.textContent = 'Resending…';
+    const { error } = await supabaseClient.auth.signUp({
+      email: window.signUpEmail,
+      password: '',
+      options: window.signUpOptions
+    });
+    if (error) resendMsg.textContent = error.message;
+    else resendMsg.textContent = 'Confirmation email resent.';
   });
 });
 </script>
