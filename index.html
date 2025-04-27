@@ -7,13 +7,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
     /* Basic page styles */
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #4a0073, #b300ff);
-      color: #fff;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
+    html,body {
+      height:100%;
+      margin:0;
+      padding:0;
+      background: radial-gradient(circle at 30% 30%, #5d00b9 0%, #4a0073 45%, #300050 100%);
+      color:#fff;
+      font-family:Arial, sans-serif;
+      overflow:hidden;
     }
     .topbar { position:absolute; top:15px; right:20px; display:flex; gap:6px; z-index:100; }
     .topbar button, .topbar a { background:#333; color:#fff; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; font-size:0.9em; text-decoration:none; }
@@ -24,7 +25,7 @@
     .links a { display:inline-block; margin:0 8px; color:#7de2fc; text-decoration:none; font-size:1em; }
     /* Bubble gallery */
     .gallery { position:absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden; }
-    .gallery img { position:absolute; width:120px; height:120px; border-radius:50%; object-fit:cover; box-shadow:0 0 8px rgba(255,255,255,0.2); cursor:pointer; animation-name:float; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }
+    .gallery img { position:absolute; width:120px; height:120px; border-radius:50%; object-fit:cover; box-shadow:0 0 12px rgba(255,255,255,0.25); cursor:pointer; animation-name:float; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }
     @keyframes float { 0%{transform:translateY(0);}50%{transform:translateY(-30px);}100%{transform:translateY(0);} }
   </style>
 </head>
@@ -92,4 +93,3 @@
 </script>
 </body>
 </html>
-
