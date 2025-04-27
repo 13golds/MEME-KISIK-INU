@@ -1,35 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kisik Token</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
-    /* Basic page styles */
-    html,body {
-      height:100%;
-      margin:0;
-      padding:0;
-      background: radial-gradient(circle at 30% 30%, #5d00b9 0%, #4a0073 45%, #300050 100%);
-      color:#fff;
-      font-family:Arial, sans-serif;
-      overflow:hidden;
+    /* GLOBAL  */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(
+        circle at 30% 30%,
+        #5d00b9 0%,
+        #4a0073 45%,
+        #300050 100%
+      );
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
     }
-    .topbar { position:absolute; top:15px; right:20px; display:flex; gap:6px; z-index:100; }
-    .topbar button, .topbar a { background:#333; color:#fff; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; font-size:0.9em; text-decoration:none; }
-    .topbar button:hover, .topbar a:hover { background:#555; }
-    .logo { position:absolute; top:20px; left:20px; width:120px; border-radius:12px; z-index:100; }
-    .lang { position:absolute; top:60px; left:50%; transform:translateX(-50%); text-align:center; }
-    .links { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); text-align:center; }
-    .links a { display:inline-block; margin:0 8px; color:#7de2fc; text-decoration:none; font-size:1em; }
-    /* Bubble gallery */
-    .gallery { position:absolute; top:0; left:0; width:100vw; height:100vh; overflow:hidden; }
-    .gallery img { position:absolute; width:120px; height:120px; border-radius:50%; object-fit:cover; box-shadow:0 0 12px rgba(255,255,255,0.25); cursor:pointer; animation-name:float; animation-timing-function:ease-in-out; animation-iteration-count:infinite; }
-    @keyframes float { 0%{transform:translateY(0);}50%{transform:translateY(-30px);}100%{transform:translateY(0);} }
+
+    /* TOP BAR */
+    .topbar {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      display: flex;
+      gap: 6px;
+      z-index: 200;
+    }
+    .topbar button,
+    .topbar a {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      text-decoration: none;
+    }
+    .topbar button:hover,
+    .topbar a:hover {
+      background: #555;
+    }
+
+    /* LOGO */
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 120px;
+      border-radius: 12px;
+      z-index: 200;
+    }
+
+    /* MULTILINGUAL TEXT */
+    .lang {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      max-width: 90vw;
+      z-index: 150;
+    }
+    .lang h1 {
+      font-size: 2.4rem;
+      margin: 0 0 12px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+    .lang p {
+      font-size: 1.1rem;
+      margin: 0;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    }
+    .lang:not(.active) { display:none; }
+
+    /* EXTERNAL LINKS */
+    .links {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 150;
+    }
+    .links a {
+      display: inline-block;
+      margin: 0 8px;
+      color: #7de2fc;
+      text-decoration: none;
+      font-size: 1em;
+    }
+
+    /* BUBBLES */
+    .gallery {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 50;
+      pointer-events: none;
+    }
+    .gallery img {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+      animation-name: float;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      transition: transform 0.3s ease;
+    }
+    @keyframes float {
+      0%   { transform: translate(0,   0)      scale(1)   rotate(0deg); }
+      25%  { transform: translate(20px,-40px) scale(1.05) rotate(5deg); }
+      50%  { transform: translate(-10px,-80px) scale(0.95) rotate(-4deg); }
+      75%  { transform: translate(-25px,-40px) scale(1.08) rotate(3deg); }
+      100% { transform: translate(0,   0)      scale(1)   rotate(0deg); }
+    }
   </style>
 </head>
 <body>
+  <!-- TOP BAR -->
   <div class="topbar">
     <button onclick="switchLang('en')">EN</button>
     <button onclick="switchLang('ru')">RU</button>
@@ -37,27 +138,42 @@
     <button onclick="switchLang('fr')">FR</button>
     <a id="loginBtn" href="login.html">Login</a>
   </div>
-  <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo">
 
-  <!-- Multilingual intros (only one visible) -->
-  <div class="lang lang-en active"><h1>Hi, my name is Kisik!</h1><p>I'm here to offer you coffee ☕<br>Add me to your wallet — make your dream come true!</p></div>
-  <div class="lang lang-ru"><h1>Привет, меня зовут Кисик!</h1><p>Я угощаю тебя кофе ☕<br>Добавь меня в кошелёк — исполним мечту!</p></div>
-  <div class="lang lang-es"><h1>¡Hola! Me llamo Kisik</h1><p>Te invito a un café ☕<br>Añádeme a tu billetera — haz realidad tu sueño!</p></div>
-  <div class="lang lang-fr"><h1>Salut, je m'appelle Kisik!</h1><p>Je t’offre un café ☕<br>Ajoute-moi à ton portefeuille — réalise ton vœu!</p></div>
+  <!-- LOGO -->
+  <img src="images/kisik_logo.png" alt="Kisik Logo" class="logo" />
 
-  <!-- Bubble container -->
-  <div class="gallery">
-    <img src="images/kisik_reads.png" alt="Kisik Reads">
-    <img src="images/kisik_with_burger.png" alt="Kisik with Burger">
-    <img src="images/kisik_at_school.png" alt="Kisik at School">
-    <img src="images/kisik_basket.png" alt="Kisik Basketball">
-    <img src="images/kisik_snou.png" alt="Kisik Snowboard">
-    <img src="images/kisik_roll.png" alt="Kisik on Rollers">
-    <img src="images/kisik_winter.png" alt="Kisik in Winter Hat">
-    <img src="images/kisik_phone.png" alt="Kisik with Phone">
-    <img src="images/kisik_brushes_teeth.png" alt="Kisik Brushes Teeth">
+  <!-- MULTILINGUAL INTROS -->
+  <div class="lang lang-en active">
+    <h1>Hi, my name is Kisik!</h1>
+    <p>I'm here to offer you coffee ☕<br />Add me to your wallet — make your dream come true!</p>
+  </div>
+  <div class="lang lang-ru">
+    <h1>Привет, меня зовут Кисик!</h1>
+    <p>Я угощаю тебя кофе ☕<br />Добавь меня в кошелёк — исполним мечту!</p>
+  </div>
+  <div class="lang lang-es">
+    <h1>¡Hola! Me llamo Kisik</h1>
+    <p>Te invito a un café ☕<br />Añádeme a tu billetera — haz realidad tu sueño!</p>
+  </div>
+  <div class="lang lang-fr">
+    <h1>Salut, je m'appelle Kisik!</h1>
+    <p>Je t’offre un café ☕<br />Ajoute-moi à ton portefeuille — réalise ton vœu!</p>
   </div>
 
+  <!-- BUBBLE CONTAINER -->
+  <div class="gallery">
+    <img src="images/kisik_reads.png"         alt="Kisik Reads"          />
+    <img src="images/kisik_with_burger.png"   alt="Kisik with Burger"    />
+    <img src="images/kisik_at_school.png"     alt="Kisik at School"      />
+    <img src="images/kisik_basket.png"        alt="Kisik Basketball"     />
+    <img src="images/kisik_snou.png"          alt="Kisik Snowboard"      />
+    <img src="images/kisik_roll.png"          alt="Kisik on Rollers"     />
+    <img src="images/kisik_winter.png"        alt="Kisik in Winter Hat"  />
+    <img src="images/kisik_phone.png"         alt="Kisik with Phone"     />
+    <img src="images/kisik_brushes_teeth.png" alt="Kisik Brushes Teeth"  />
+  </div>
+
+  <!-- DEX LINKS -->
   <div class="links">
     <a href="https://jup.ag/swap/SOL-3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48" target="_blank">Jupiter</a>
     <a href="https://www.dextools.io/app/en/solana/pair-explorer/5dvNuWurrZNb3bePgUbJVLZ4x2zxNsDhdczKD3UCrFRm" target="_blank">DEXTools</a>
@@ -65,31 +181,16 @@
     <a href="https://birdeye.so/token/3DbBHBf3cJShKe3MCwCSbqecL92GCNFeTRdeBcHqon48?chain=solana" target="_blank">Birdeye</a>
   </div>
 
-<script>
-  // Language switch
-  function switchLang(lang){
-    document.querySelectorAll('.lang').forEach(el=>el.classList.remove('active'));
-    document.querySelector('.lang-'+lang).classList.add('active');
-    localStorage.setItem('ksk_lang', lang);
-  }
-  switchLang(localStorage.getItem('ksk_lang')||'en');
+  <script>
+    // LANGUAGE SWITCH
+    function switchLang(lang) {
+      document.querySelectorAll('.lang').forEach((el) => el.classList.remove('active'));
+      document.querySelector('.lang-' + lang).classList.add('active');
+      localStorage.setItem('ksk_lang', lang);
+    }
+    switchLang(localStorage.getItem('ksk_lang') || 'en');
 
-  // Supabase session button
-  const supa = supabase.createClient('https://rrfcfkqxybhbouqytiwg.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl0aXdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3Mjk5NDMsImV4cCI6MjA1OTMwNTk0M30.A8_EQjO1PiCSFe5V9VEPAWsfraG6Opw4UeB9X-yBav0');
-  (async()=>{ const { data:{session} } = await supa.auth.getSession(); const btn=document.getElementById('loginBtn'); if(session){btn.textContent='Dashboard';btn.href='dashboard.html';} })();
-
-  // Position & animate bubbles
-  window.addEventListener('load', ()=>{
-    const imgs = document.querySelectorAll('.gallery img');
-    imgs.forEach(img=>{
-      img.style.top  = Math.random()*80+'vh';
-      img.style.left = Math.random()*90+'vw';
-      const dur = 4+Math.random()*6;
-      img.style.animationDuration = dur+'s';
-      img.style.animationDelay    = (Math.random()*dur)+'s';
-      img.addEventListener('click', ()=>{ img.style.transform='scale(1.2)'; setTimeout(()=>img.style.transform='',300);} );
-    });
-  });
-</script>
-</body>
-</html>
+    // SUPABASE LOGIN BUTTON
+    const supa = supabase.createClient(
+      'https://rrfcfkqxybhbouqytiwg.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyZmNma3F4eWJoYm91cXl
